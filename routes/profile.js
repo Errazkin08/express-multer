@@ -1,7 +1,20 @@
 var express = require('express');
 var router = express.Router();
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+const storage= multer.diskStorage({
+    destination: function (req,file,cb){
+        cb(null,'public/uploads/');
+    },
+    filename: function (req,file,cb){
+        const originalName = file.originalname;
+        const extension = originalName.split('.').pop()
+        const uniqueSuffix = Date.now() + '-' +Math.round(Math.random() * 1E9);
+        cb(null,`${originalName.replace.r(/\.[^.]+$/, '')}-${uniqueSuffix}.${extension}`)
+    }
+});
+
+const upload= multer ({storage:storage})
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
